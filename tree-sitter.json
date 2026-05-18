@@ -1,0 +1,20 @@
+{
+  "grammars": [
+    {
+      "name": "jnoweb",
+      "camelcase": "Jnoweb",
+      "scope": "source.jnoweb",
+      "path": ".",
+      "file-types": ["jnw"],
+      "highlights": "queries/highlights.scm",
+      "injections": "queries/injections.scm"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "description": "tree-sitter parser for jnoweb (Julia NoWeb) literate programming documents",
+    "authors": [{"name": "Urtzi"}],
+    "license": "GPL-3.0-or-later",
+    "repository": "https://github.com/urtzienriquez/tree-sitter-jnoweb"
+  }
+}

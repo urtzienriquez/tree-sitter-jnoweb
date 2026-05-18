@@ -1,0 +1,101 @@
+==================
+jnw engine
+==================
+
+a bit of \textit{latex}.
+
+We all know 2 > 1
+
+<<engine="lua">>=
+one <- 1 + 1
+@
+
+Back again!
+
+---
+
+(source_file
+	(latex)
+	(jchunk
+		(jnv_sig_beg)
+        (jnv_sig_options
+            (jnv_engine
+                (jnv_engine_key))
+        )
+		(jnv_sig_end)
+		(jnv_content)
+	)
+	(latex)
+)
+
+==================
+jnw engine - with option
+==================
+
+a bit of \textit{latex}.
+
+We all know 2 > 1
+
+<<echo = T, engine = "lua", results="asis">>=
+one <- 1 + 1
+@
+
+Back again!
+
+---
+
+(source_file
+	(latex)
+	(jchunk
+		(jnv_sig_beg)
+        (jnv_sig_options
+            (jnv_key_pair
+                (jnv_key)
+                (jnv_val))
+            (jnv_engine
+                (jnv_engine_key))
+            (jnv_key_pair
+                (jnv_key)
+                (jnv_val)
+            )
+        )
+		(jnv_sig_end)
+		(jnv_content)
+	)
+	(latex)
+)
+
+==================
+jnw engine - with label and option
+==================
+
+a bit of \textit{latex}.
+
+We all know 2 > 1
+
+<<foo, engine = "lua", results="asis">>=
+one <- 1 + 1
+@
+
+Back again!
+
+---
+
+(source_file
+	(latex)
+	(jchunk
+		(jnv_sig_beg)
+        (jnv_sig_options
+            (jnv_label)
+            (jnv_engine
+                (jnv_engine_key))
+            (jnv_key_pair
+                (jnv_key)
+                (jnv_val)
+            )
+        )
+		(jnv_sig_end)
+		(jnv_content)
+	)
+	(latex)
+)

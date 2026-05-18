@@ -1,0 +1,362 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/grammar.schema.json",
+  "name": "jnoweb",
+  "rules": {
+    "source_file": {
+      "type": "REPEAT",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "latex"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "jchunk"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "jinline"
+          }
+        ]
+      }
+    },
+    "jchunk": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "jnv_sig_beg"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "jnv_sig_options"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "jnv_sig_end"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "jnv_content"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "@"
+        }
+      ]
+    },
+    "jinline": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "Sexpr",
+          "content": {
+            "type": "SYMBOL",
+            "name": "command_name"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "{"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "PATTERN",
+                "value": "[^}]+"
+              },
+              "named": true,
+              "value": "jnv_content"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "}"
+        }
+      ]
+    },
+    "jnv_sig_options": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "options",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_jnv_options"
+          }
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "label",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "jnv_key"
+                },
+                "named": true,
+                "value": "jnv_label"
+              }
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": ","
+                    },
+                    {
+                      "type": "FIELD",
+                      "name": "options",
+                      "content": {
+                        "type": "SYMBOL",
+                        "name": "_jnv_options"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "_jnv_options": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "jnv_key_pair"
+            },
+            {
+              "type": "PREC",
+              "value": 2,
+              "content": {
+                "type": "SYMBOL",
+                "name": "_jnv_engine"
+              }
+            }
+          ]
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "jnv_key_pair"
+                  },
+                  {
+                    "type": "PREC",
+                    "value": 2,
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_jnv_engine"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "_jnv_engine": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "engine"
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "jnv_engine_val"
+          },
+          "named": true,
+          "value": "jnv_engine"
+        }
+      ]
+    },
+    "jnv_engine_val": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "\""
+            },
+            {
+              "type": "FIELD",
+              "name": "engine",
+              "content": {
+                "type": "SYMBOL",
+                "name": "jnv_engine_key"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": "\""
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "'"
+            },
+            {
+              "type": "FIELD",
+              "name": "engine",
+              "content": {
+                "type": "SYMBOL",
+                "name": "jnv_engine_key"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": "'"
+            }
+          ]
+        }
+      ]
+    },
+    "jnv_key_pair": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "key",
+          "content": {
+            "type": "SYMBOL",
+            "name": "jnv_key"
+          }
+        },
+        {
+          "type": "PATTERN",
+          "value": "=[ ]*"
+        },
+        {
+          "type": "FIELD",
+          "name": "value",
+          "content": {
+            "type": "SYMBOL",
+            "name": "jnv_val"
+          }
+        }
+      ]
+    },
+    "jnv_engine_key": {
+      "type": "PATTERN",
+      "value": "[a-zA-Z]+[a-zA-Z0-9]*"
+    },
+    "jnv_key": {
+      "type": "PATTERN",
+      "value": "[a-zA-Z_]+[a-zA-Z0-9_.]*"
+    },
+    "jnv_val": {
+      "type": "PATTERN",
+      "value": "[^,>]+"
+    },
+    "latex": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "REPEAT1",
+        "content": {
+          "type": "SYMBOL",
+          "name": "_latex_word"
+        }
+      }
+    }
+  },
+  "extras": [
+    {
+      "type": "PATTERN",
+      "value": "\\s"
+    }
+  ],
+  "conflicts": [],
+  "precedences": [],
+  "externals": [
+    {
+      "type": "SYMBOL",
+      "name": "_latex_word"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "command_name"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "jnv_sig_beg"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "jnv_sig_end"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "jnv_content"
+    }
+  ],
+  "inline": [],
+  "supertypes": [],
+  "reserved": {}
+}

@@ -1,0 +1,28 @@
+[package]
+name = "tree-sitter-jnoweb"
+description = "tree-sitter parser for jnoweb (Julia NoWeb) literate programming documents"
+version = "0.1.0"
+keywords = ["incremental", "parsing", "jnoweb", "julia", "noweb"]
+categories = ["parsing", "text-editors"]
+edition = "2021"
+license = "GPL-3.0-or-later"
+repository = "https://github.com/urtzienriquez/tree-sitter-jnoweb"
+homepage = "https://github.com/urtzienriquez/tree-sitter-jnoweb"
+
+build = "bindings/rust/build.rs"
+include = [
+  "bindings/rust/*",
+  "grammar.js",
+  "queries/*",
+  "src/*",
+  "tree-sitter.json",
+]
+
+[lib]
+path = "bindings/rust/lib.rs"
+
+[dependencies]
+tree-sitter = "~0.24"
+
+[build-dependencies]
+cc = "1.0"

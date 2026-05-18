@@ -1,0 +1,232 @@
+[
+  {
+    "type": "jchunk",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "jnv_content",
+          "named": true
+        },
+        {
+          "type": "jnv_sig_beg",
+          "named": true
+        },
+        {
+          "type": "jnv_sig_end",
+          "named": true
+        },
+        {
+          "type": "jnv_sig_options",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "jinline",
+    "named": true,
+    "fields": {
+      "Sexpr": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "command_name",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "jnv_content",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "jnv_engine",
+    "named": true,
+    "fields": {
+      "engine": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "jnv_engine_key",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "jnv_key_pair",
+    "named": true,
+    "fields": {
+      "key": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "jnv_key",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "jnv_val",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "jnv_sig_options",
+    "named": true,
+    "fields": {
+      "label": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "jnv_label",
+            "named": true
+          }
+        ]
+      },
+      "options": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": "=",
+            "named": false
+          },
+          {
+            "type": "engine",
+            "named": false
+          },
+          {
+            "type": "jnv_engine",
+            "named": true
+          },
+          {
+            "type": "jnv_key_pair",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "latex",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "source_file",
+    "named": true,
+    "root": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "jchunk",
+          "named": true
+        },
+        {
+          "type": "jinline",
+          "named": true
+        },
+        {
+          "type": "latex",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "\"",
+    "named": false
+  },
+  {
+    "type": "'",
+    "named": false
+  },
+  {
+    "type": ",",
+    "named": false
+  },
+  {
+    "type": "=",
+    "named": false
+  },
+  {
+    "type": "@",
+    "named": false
+  },
+  {
+    "type": "command_name",
+    "named": true
+  },
+  {
+    "type": "engine",
+    "named": false
+  },
+  {
+    "type": "jnv_content",
+    "named": true
+  },
+  {
+    "type": "jnv_engine_key",
+    "named": true
+  },
+  {
+    "type": "jnv_key",
+    "named": true
+  },
+  {
+    "type": "jnv_label",
+    "named": true
+  },
+  {
+    "type": "jnv_sig_beg",
+    "named": true
+  },
+  {
+    "type": "jnv_sig_end",
+    "named": true
+  },
+  {
+    "type": "jnv_val",
+    "named": true
+  },
+  {
+    "type": "{",
+    "named": false
+  },
+  {
+    "type": "}",
+    "named": false
+  }
+]
