@@ -289,8 +289,8 @@
           }
         },
         {
-          "type": "PATTERN",
-          "value": "=[ ]*"
+          "type": "STRING",
+          "value": "="
         },
         {
           "type": "FIELD",
@@ -308,11 +308,24 @@
     },
     "jnv_key": {
       "type": "PATTERN",
-      "value": "[a-zA-Z_]+[a-zA-Z0-9_.]*"
+      "value": "[a-zA-Z_][a-zA-Z0-9_\\-.]*"
     },
     "jnv_val": {
-      "type": "PATTERN",
-      "value": "[^,>]+"
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "\"[^\"]*\""
+        },
+        {
+          "type": "PATTERN",
+          "value": "'[^']*'"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[^,>\\s]+"
+        }
+      ]
     },
     "latex": {
       "type": "PREC_RIGHT",
