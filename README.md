@@ -44,21 +44,27 @@ gcc -O2 -shared \
   -o ~/.local/share/nvim/site/parser/jnoweb.so
 ```
 
-### 3. Configure Neovim
+### 3. Register the filetype
 
-Add to your `init.lua`:
+Tell Neovim to treat `.jnw` files as `jnoweb`. This is required for ALL `jnoweb` features — highlighting, formatting, injections, etc. Without it, nothing below will work.
 
 ```lua
 vim.filetype.add({
   extension = { jnw = "jnoweb" },
 })
+```
 
+### 4. Register the parser
+
+Point tree-sitter to the compiled grammar:
+
+```lua
 vim.treesitter.language.add("jnoweb", {
   path = vim.fn.expand("~/.local/share/nvim/site/parser/jnoweb.so"),
 })
 ```
 
-### 4. Verify
+### 5. Verify
 
 Open a `.jnw` file and run `:InspectTree`. You should see proper syntax nodes with no red `ERROR` tags.
 
@@ -93,6 +99,9 @@ jnoweb-fmt < input.jnw > output.jnw   # stdin/stdout
 ```
 
 ### Neovim (conform.nvim)
+
+Requires the filetype registration from [step 3](#3-register-the-filetype) above.
+Without `vim.filetype.add`, conform won't recognize `.jnw` files.
 
 ```lua
 require("conform").setup({
