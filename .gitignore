@@ -1,7 +1,8 @@
-# The Rnweb example file makes lots of other files if you try and compile it, ignore all of these
+# Ignore generated files from compiling examples, but keep source files
 example/*
-!example/*.Rnw
+!example/*.jnw
 !example/packages.tex
+!example/*.bib
 src/.ccls-cache/
 .ccls-cache/
 jnoweb.so

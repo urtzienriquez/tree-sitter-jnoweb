@@ -1,0 +1,16 @@
+\documentclass{article}
+\begin{document}
+
+<<setup>>=
+using Statistics
+x = randn(100)
+@
+
+The mean is \Sexpr{round(mean(x), digits=3)}.
+
+<<plot, fig.width=6, fig.height=4>>=
+using Plots
+plot(x)
+@
+
+\end{document}
