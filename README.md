@@ -22,52 +22,49 @@ The mean is \Sexpr{round(mean(x), digits=3)}.
 \end{document}
 ```
 
-## Installation
+## Neovim setup
 
-### npm
+### 1. Symlink query files
 
 ```bash
-npm install tree-sitter-jnoweb
+mkdir -p ~/.config/nvim/queries/jnoweb/
+ln -sf ~/path/to/tree-sitter-jnoweb/queries/highlights.scm ~/.config/nvim/queries/jnoweb/highlights.scm
+ln -sf ~/path/to/tree-sitter-jnoweb/queries/injections.scm ~/.config/nvim/queries/jnoweb/injections.scm
 ```
 
-### Neovim with nvim-treesitter
+Replace `~/path/to/tree-sitter-jnoweb` with the actual path to this repo.
 
-If the parser is [registered with nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter), install with:
+### 2. Compile the parser
 
+```bash
+mkdir -p ~/.local/share/nvim/site/parser/
+gcc -O2 -shared \
+  -I src \
+  src/parser.c src/scanner.c \
+  -o ~/.local/share/nvim/site/parser/jnoweb.so
 ```
-:TSInstall jnoweb
-```
 
-Otherwise, add this to your config (edit the URL to match the published version):
+### 3. Configure Neovim
+
+Add to your `init.lua`:
 
 ```lua
-vim.api.nvim_create_autocmd('User', {
-  pattern = 'TSUpdate',
-  callback = function()
-    require('nvim-treesitter.parsers').jnoweb = {
-      install_info = {
-        url = 'https://github.com/urtzienriquez/tree-sitter-jnoweb',
-        revision = 'v0.2.0',
-      },
-    }
-  end,
+vim.filetype.add({
+  extension = { jnw = "jnoweb" },
 })
 
-vim.treesitter.language.register('jnoweb', 'jnoweb')
+vim.treesitter.language.add("jnoweb", {
+  path = vim.fn.expand("~/.local/share/nvim/site/parser/jnoweb.so"),
+})
 ```
 
-Then run `:TSInstall jnoweb`.
+### 4. Verify
 
-### Other editors
+Open a `.jnw` file and run `:InspectTree`. You should see proper syntax nodes with no red `ERROR` tags.
 
-- **Helix**: add this to your `languages.toml`:
-  ```toml
-  [[language]]
-  name = "jnoweb"
-  scope = "source.jnoweb"
-  file-types = ["jnw"]
-  ```
-- **VS Code**: see the [VS Code extension marketplace](#) (coming soon)
+## Installation from GitHub release
+
+Download `tree-sitter-jnoweb.wasm` or `tree-sitter-jnoweb.tar.gz` from the [latest release](https://github.com/urtzienriquez/tree-sitter-jnoweb/releases).
 
 ## Queries
 
@@ -77,9 +74,16 @@ Then run `:TSInstall jnoweb`.
 ## Development
 
 ```bash
-npm install       # install dependencies
-tree-sitter test  # run corpus tests
+tree-sitter generate    # regenerate parser.c from grammar.js
+tree-sitter test        # run corpus tests
 tree-sitter build --wasm  # build WASM binary
+```
+
+To recompile the `.so` for local testing after changing the grammar:
+
+```bash
+tree-sitter generate
+gcc -O2 -shared -I src src/parser.c src/scanner.c -o ~/.local/share/nvim/site/parser/jnoweb.so
 ```
 
 ## License
