@@ -95,13 +95,15 @@ jnoweb-fmt < input.jnw > output.jnw   # stdin/stdout
 ### Neovim (conform.nvim)
 
 ```lua
-require("conform").formatters.jnoweb = {
-  command = "jnoweb-fmt",
-  stdin = true,
-}
 require("conform").setup({
+  formatters = {
+    jnoweb_fmt = {
+      command = "jnoweb-fmt",
+      stdin = true,
+    },
+  },
   formatters_by_ft = {
-    jnoweb = { "jnoweb" },
+    jnoweb = { "jnoweb_fmt" },
   },
 })
 ```
