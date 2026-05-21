@@ -179,7 +179,7 @@ bool tree_sitter_jnoweb_external_scanner_scan(
 {
 	advance_ws(lexer);
 
-	bool res;
+	bool res = false;
 
 	if (valid_symbols[_LATEX_WORD] || valid_symbols[JNV_INLINE] || valid_symbols[JNV_SIG_BEG])
 	{
