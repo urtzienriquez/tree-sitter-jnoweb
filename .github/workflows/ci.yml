@@ -3,12 +3,6 @@ name: CI
 on:
   push:
     branches: [main]
-    paths:
-      - grammar.js
-      - src/**
-      - test/**
-      - bindings/**
-      - tree-sitter.json
   pull_request:
     paths:
       - grammar.js
@@ -16,6 +10,7 @@ on:
       - test/**
       - bindings/**
       - tree-sitter.json
+      - .github/**
 
 concurrency:
   group: ${{github.workflow}}-${{github.ref}}
