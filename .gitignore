@@ -6,6 +6,7 @@ example/*
 src/.ccls-cache/
 .ccls-cache/
 jnoweb.so
+tree-sitter-jnoweb.wasm
 package-lock.json
 
 # Created by https://www.toptal.com/developers/gitignore/api/c,c++,node,visualstudiocode,rust

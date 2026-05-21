@@ -11,7 +11,7 @@
     }
   ],
   "metadata": {
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "tree-sitter parser for jnoweb (Julia NoWeb) literate programming documents",
     "authors": [{"name": "Urtzi"}],
     "license": "GPL-3.0-or-later",

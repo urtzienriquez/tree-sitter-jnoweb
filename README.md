@@ -22,27 +22,66 @@ The mean is \Sexpr{round(mean(x), digits=3)}.
 \end{document}
 ```
 
-## Integration
+## Installation
 
-### Neovim
-
-Add the parser to `~/.config/nvim/lua/pack.lua` or equivalent:
-
-```lua
-vim.treesitter.language.add("jnoweb")
-require("nvim-treesitter.parsers").jnoweb = {
-  install_info = {
-    url = "~/path/to/tree-sitter-jnoweb",
-    files = { "src/parser.c", "src/scanner.c" },
-    requires_generate_from_grammar = false,
-  },
-  filetype = "jnoweb",
-}
-```
-
-Query files (`highlights.scm`, `injections.scm`) are bundled under `queries/` and can be symlinked:
+### npm
 
 ```bash
-ln -s ~/path/to/tree-sitter-jnoweb/queries/highlights.scm ~/.config/nvim/queries/jnoweb/highlights.scm
-ln -s ~/path/to/tree-sitter-jnoweb/queries/injections.scm ~/.config/nvim/queries/jnoweb/injections.scm
+npm install tree-sitter-jnoweb
 ```
+
+### Neovim with nvim-treesitter
+
+If the parser is [registered with nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter), install with:
+
+```
+:TSInstall jnoweb
+```
+
+Otherwise, add this to your config (edit the URL to match the published version):
+
+```lua
+vim.api.nvim_create_autocmd('User', {
+  pattern = 'TSUpdate',
+  callback = function()
+    require('nvim-treesitter.parsers').jnoweb = {
+      install_info = {
+        url = 'https://github.com/urtzienriquez/tree-sitter-jnoweb',
+        revision = 'v0.2.0',
+      },
+    }
+  end,
+})
+
+vim.treesitter.language.register('jnoweb', 'jnoweb')
+```
+
+Then run `:TSInstall jnoweb`.
+
+### Other editors
+
+- **Helix**: add this to your `languages.toml`:
+  ```toml
+  [[language]]
+  name = "jnoweb"
+  scope = "source.jnoweb"
+  file-types = ["jnw"]
+  ```
+- **VS Code**: see the [VS Code extension marketplace](#) (coming soon)
+
+## Queries
+
+- `highlights.scm` — syntax highlighting for chunk delimiters, options, and `\Sexpr{}`
+- `injections.scm` — injects Julia into code chunks and `\Sexpr{}`, LaTeX into prose
+
+## Development
+
+```bash
+npm install       # install dependencies
+tree-sitter test  # run corpus tests
+tree-sitter build --wasm  # build WASM binary
+```
+
+## License
+
+GPL-3.0-or-later
