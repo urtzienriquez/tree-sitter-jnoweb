@@ -93,27 +93,15 @@ jnoweb-fmt < input.jnw > output.jnw   # stdin/stdout
 
 ### Neovim (conform.nvim)
 
-Add to your existing `require("conform").setup()` call, or create one:
-
 ```lua
+require("conform").formatters.jnoweb = {
+  command = "jnoweb-fmt",
+  stdin = true,
+}
 require("conform").setup({
-  formatters = {
-    jnoweb = {
-      command = "jnoweb-fmt",
-      stdin = true,
-    },
-  },
   formatters_by_ft = {
     jnoweb = { "jnoweb" },
   },
-})
-```
-
-Make sure you also have the filetype detection (from the Neovim setup section above):
-
-```lua
-vim.filetype.add({
-  extension = { jnw = "jnoweb" },
 })
 ```
 
