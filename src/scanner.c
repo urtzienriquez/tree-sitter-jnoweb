@@ -16,7 +16,7 @@ enum TokenType {
 
 static bool ws(int32_t val)
 {
-	return(val == ' ' || val == '\t' || val == '\n');
+	return(val == ' ' || val == '\t' || val == '\n' || val == '\r');
 }
 
 static void advance_ws(TSLexer* lexer)
@@ -48,31 +48,24 @@ static bool jnv_sig_end(TSLexer* lexer)
 {
 	if (lexer->eof(lexer)) return(false);
 
-	char tocheck[ESN] = {'>', '>', '=', '\n'};
-
-	bool res = true;
-	int32_t val = lexer->lookahead;
-
-	for (int i = 0; i < ESN; i++)
+	// Check for >>=
+	char tocheck[3] = {'>', '>', '='};
+	for (int i = 0; i < 3; i++)
 	{
-		val = lexer->lookahead;
-		if (val != tocheck[i])
-		{
-			res = false;
-			break;
-		} else
-		{
-			lexer->advance(lexer, false);
-		}
+		if (lexer->lookahead != tocheck[i])
+			return(false);
+		lexer->advance(lexer, false);
 	}
 
-	if (res)
-	{
-		lexer->result_symbol = JNV_SIG_END;
-		lexer->mark_end(lexer);
-	}
+	// Handle optional \r before \n (CRLF compatibility)
+	if (lexer->lookahead == '\r')
+		lexer->advance(lexer, false);
+	if (lexer->lookahead != '\n')
+		return(false);
 
-	return(res);
+	lexer->result_symbol = JNV_SIG_END;
+	lexer->mark_end(lexer);
+	return(true);
 }
 
 static bool word_or_sig(TSLexer* lexer)
