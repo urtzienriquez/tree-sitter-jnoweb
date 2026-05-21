@@ -149,11 +149,14 @@ static bool word_or_sig(TSLexer* lexer)
 		return(true);
 	}
 
+	return(false);
 }
 
-void tree_sitter_jnoweb_external_scanner_create()
-{};
-void* tree_sitter_jnoweb_external_scanner_destroy(void *payload)
+void *tree_sitter_jnoweb_external_scanner_create()
+{
+	return(NULL);
+};
+void tree_sitter_jnoweb_external_scanner_destroy(void *payload)
 {};
 unsigned tree_sitter_jnoweb_external_scanner_serialize(
   void *payload,
