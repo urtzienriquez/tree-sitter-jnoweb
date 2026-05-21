@@ -82,7 +82,8 @@ Dependencies (must be on `$PATH` or overridden via env vars):
 | Tool | Env var override | Install |
 |------|------------------|---------|
 | `latexindent` | `JNOWEB_LATEXINDENT` | `sudo apt install latexindent` or via Mason (`MasonInstall latexindent`) |
-| `julia` | `JNOWEB_JULIA` | [julialang.org](https://julialang.org) + `using Pkg; Pkg.add("JuliaFormatter")` |
+| `julia` | `JNOWEB_JULIA` | [julialang.org](https://julialang.org) |
+| `JuliaFormatter` (Julia package) | `JNOWEB_JULIA_PROJECT` (Julia project; default `@lang_serv`) | `using Pkg; Pkg.add("JuliaFormatter")` within the project |
 
 ### Usage
 

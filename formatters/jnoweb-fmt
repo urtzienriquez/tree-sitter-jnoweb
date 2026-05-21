@@ -35,9 +35,13 @@ LATEXINDENT_OPTS = [
 ]
 
 
-def format_julia_code(code, julia_cmd):
+def format_julia_code(code, julia_cmd, julia_project):
+    cmd = [julia_cmd, "--startup-file=no"]
+    if julia_project:
+        cmd.append(f"--project={julia_project}")
+    cmd.extend(["-e", JULIA_SCRIPT])
     result = subprocess.run(
-        [julia_cmd, "--startup-file=no", "-e", JULIA_SCRIPT],
+        cmd,
         input=code,
         capture_output=True,
         text=True,
@@ -62,13 +66,13 @@ def find_chunks(lines):
     return ranges
 
 
-def format_chunks(lines, ranges, julia_cmd):
+def format_chunks(lines, ranges, julia_cmd, julia_project):
     for idx, (start, end) in enumerate(ranges):
         if end - start <= 1:
             continue
         body = lines[start + 1 : end]
         code = "\n".join(body)
-        formatted = format_julia_code(code, julia_cmd)
+        formatted = format_julia_code(code, julia_cmd, julia_project)
         formatted_lines = formatted.rstrip("\n").splitlines()
         lines[start + 1 : end] = formatted_lines
         shift = len(formatted_lines) - len(body)
@@ -77,7 +81,7 @@ def format_chunks(lines, ranges, julia_cmd):
     return lines
 
 
-def format_file(content, latexindent_cmd, julia_cmd):
+def format_file(content, latexindent_cmd, julia_cmd, julia_project):
     lines = content.splitlines(keepends=False)
     ranges = find_chunks(lines)
 
@@ -90,7 +94,7 @@ def format_file(content, latexindent_cmd, julia_cmd):
         )
         return result.stdout if result.returncode == 0 else content
 
-    lines = format_chunks(lines, ranges, julia_cmd)
+    lines = format_chunks(lines, ranges, julia_cmd, julia_project)
 
     placeholders = {}
     temp_lines = []
@@ -152,8 +156,9 @@ def main():
         "JNOWEB_JULIA",
         "https://julialang.org",
     )
+    julia_project = os.environ.get("JNOWEB_JULIA_PROJECT", "@lang_serv")
 
-    result = format_file(content, latexindent_cmd, julia_cmd)
+    result = format_file(content, latexindent_cmd, julia_cmd, julia_project)
     sys.stdout.write(result)
 
 
