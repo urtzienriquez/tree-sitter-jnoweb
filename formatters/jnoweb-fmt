@@ -1,0 +1,161 @@
+#!/usr/bin/env python3
+import sys
+import subprocess
+import os
+import re
+import shutil
+import argparse
+
+
+def die(msg):
+    print(f"error: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+def find_tool(name, env_var, install_hint):
+    path = os.environ.get(env_var) or shutil.which(name)
+    if path:
+        return path
+    die(f"{name} not found. Set ${env_var} or install it: {install_hint}")
+
+
+JULIA_SCRIPT = """
+using JuliaFormatter
+text = read(stdin, String)
+formatted = format_text(text,
+    always_for_in = true,
+    separate_kwargs_with_semicolon = true,
+)
+print(formatted)
+"""
+
+LATEXINDENT_OPTS = [
+    "-g", "/dev/null",
+    "-y", 'defaultIndent:"  ",noAdditionalIndent:multicols:1,indentPreamble:1,indentRules:item:"  "',
+]
+
+
+def format_julia_code(code, julia_cmd):
+    result = subprocess.run(
+        [julia_cmd, "--startup-file=no", "-e", JULIA_SCRIPT],
+        input=code,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode == 0 and result.stdout.strip():
+        return result.stdout
+    return code
+
+
+def find_chunks(lines):
+    ranges = []
+    i = 0
+    while i < len(lines):
+        if re.match(r"^<<.*>>=", lines[i]):
+            start = i
+            for j in range(i + 1, len(lines)):
+                if re.match(r"^@\s*$", lines[j].rstrip()):
+                    ranges.append((start, j))
+                    i = j
+                    break
+        i += 1
+    return ranges
+
+
+def format_chunks(lines, ranges, julia_cmd):
+    for idx, (start, end) in enumerate(ranges):
+        if end - start <= 1:
+            continue
+        body = lines[start + 1 : end]
+        code = "\n".join(body)
+        formatted = format_julia_code(code, julia_cmd)
+        formatted_lines = formatted.rstrip("\n").splitlines()
+        lines[start + 1 : end] = formatted_lines
+        shift = len(formatted_lines) - len(body)
+        for j in range(idx + 1, len(ranges)):
+            ranges[j] = (ranges[j][0] + shift, ranges[j][1] + shift)
+    return lines
+
+
+def format_file(content, latexindent_cmd, julia_cmd):
+    lines = content.splitlines(keepends=False)
+    ranges = find_chunks(lines)
+
+    if not ranges:
+        result = subprocess.run(
+            [latexindent_cmd] + LATEXINDENT_OPTS,
+            input=content,
+            capture_output=True,
+            text=True,
+        )
+        return result.stdout if result.returncode == 0 else content
+
+    lines = format_chunks(lines, ranges, julia_cmd)
+
+    placeholders = {}
+    temp_lines = []
+    last_idx = 0
+
+    for idx, (start, end) in enumerate(ranges):
+        temp_lines.extend(lines[last_idx:start])
+        key = f"JNBCHUNKINTERNAL{idx}"
+        placeholders[key] = "\n".join(lines[start : end + 1])
+        temp_lines.append(f"\\{key}")
+        last_idx = end + 1
+
+    temp_lines.extend(lines[last_idx:])
+    processed_input = "\n".join(temp_lines)
+
+    result = subprocess.run(
+        [latexindent_cmd] + LATEXINDENT_OPTS,
+        input=processed_input,
+        capture_output=True,
+        text=True,
+    )
+
+    if result.returncode != 0:
+        return content
+
+    formatted_output = result.stdout
+    for key, original_block in placeholders.items():
+        pattern = re.compile(r"^[ \t]*\\" + re.escape(key) + r"\s*$", re.MULTILINE)
+        formatted_output = pattern.sub(lambda m: original_block, formatted_output)
+
+    return formatted_output
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Format .jnw (Julia NoWeb) files")
+    parser.add_argument("file", nargs="?", help="File to format (reads stdin if omitted)")
+    args = parser.parse_args()
+
+    if args.file:
+        with open(args.file) as f:
+            content = f.read()
+    else:
+        content = sys.stdin.read()
+
+    if not content.strip():
+        if args.file:
+            pass
+        else:
+            sys.stdout.write(content)
+        return
+
+    latexindent_cmd = find_tool(
+        "latexindent",
+        "JNOWEB_LATEXINDENT",
+        "https://ctan.org/pkg/latexindent",
+    )
+    julia_cmd = find_tool(
+        "julia",
+        "JNOWEB_JULIA",
+        "https://julialang.org",
+    )
+
+    result = format_file(content, latexindent_cmd, julia_cmd)
+    sys.stdout.write(result)
+
+
+if __name__ == "__main__":
+    main()

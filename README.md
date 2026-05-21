@@ -66,6 +66,45 @@ Open a `.jnw` file and run `:InspectTree`. You should see proper syntax nodes wi
 
 Download `tree-sitter-jnoweb.wasm` or `tree-sitter-jnoweb.tar.gz` from the [latest release](https://github.com/urtzienriquez/tree-sitter-jnoweb/releases).
 
+## Formatting
+
+This repo ships `formatters/jnoweb-fmt`, a standalone formatter for `.jnw` files. It formats Julia code chunks with [JuliaFormatter](https://github.com/domluna/JuliaFormatter.jl) and LaTeX prose with [latexindent](https://ctan.org/pkg/latexindent).
+
+### Installation
+
+```bash
+cp formatters/jnoweb-fmt ~/.local/bin/
+chmod +x ~/.local/bin/jnoweb-fmt
+```
+
+Dependencies (must be on `$PATH` or overridden via env vars):
+
+| Tool | Env var override | Install |
+|------|------------------|---------|
+| `latexindent` | `JNOWEB_LATEXINDENT` | `sudo apt install latexindent` or via Mason (`MasonInstall latexindent`) |
+| `julia` | `JNOWEB_JULIA` | [julialang.org](https://julialang.org) + `using Pkg; Pkg.add("JuliaFormatter")` |
+
+### Usage
+
+```bash
+jnoweb-fmt file.jnw          # format in-place
+jnoweb-fmt < input.jnw > output.jnw   # stdin/stdout
+```
+
+### Neovim (conform.nvim)
+
+```lua
+require("conform").formatters.jnoweb = {
+  command = "jnoweb-fmt",
+  stdin = true,
+}
+require("conform").setup({
+  formatters_by_ft = {
+    jnoweb = { "jnoweb" },
+  },
+})
+```
+
 ## Queries
 
 - `highlights.scm` — syntax highlighting for chunk delimiters, options, and `\Sexpr{}`
