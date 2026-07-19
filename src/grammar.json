@@ -333,8 +333,17 @@
       "content": {
         "type": "REPEAT1",
         "content": {
-          "type": "SYMBOL",
-          "name": "_latex_word"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_latex_word"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "latex_comment"
+            }
+          ]
         }
       }
     }
@@ -367,6 +376,10 @@
     {
       "type": "SYMBOL",
       "name": "jnv_content"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "latex_comment"
     }
   ],
   "inline": [],

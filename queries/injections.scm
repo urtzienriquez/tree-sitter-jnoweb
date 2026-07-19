@@ -24,6 +24,9 @@
   (#set! injection.combined))
 
 ; Everything else → LaTeX
-((latex) @injection.content
+([
+  (latex)
+  (latex_comment)
+] @injection.content
   (#set! injection.language "latex")
   (#set! injection.combined))

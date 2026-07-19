@@ -12,7 +12,10 @@ enum TokenType {
 	JNV_SIG_BEG,
 	JNV_SIG_END,
 	JNV_CONTENT,
+	LATEX_COMMENT,
 };
+
+static bool prev_was_ws = false;
 
 static bool ws(int32_t val)
 {
@@ -21,7 +24,9 @@ static bool ws(int32_t val)
 
 static void advance_ws(TSLexer* lexer)
 {
-	while (ws(lexer->lookahead))  lexer->advance(lexer, true);
+	bool consumed = false;
+	while (ws(lexer->lookahead))  { lexer->advance(lexer, true); consumed = true; }
+	prev_was_ws = consumed;
 };
 
 static bool jnv_content(TSLexer* lexer)
@@ -99,6 +104,18 @@ static bool word_or_sig(TSLexer* lexer)
 		}
 	}
 
+	if (lexer->lookahead == '%' && (col == 0 || prev_was_ws))
+	{
+		while ((val != '\n') && ! lexer->eof(lexer))
+		{
+			lexer->advance(lexer, false);
+			val = lexer->lookahead;
+		}
+		lexer->mark_end(lexer);
+		lexer->result_symbol = LATEX_COMMENT;
+		return(true);
+	}
+
 	if (lexer->lookahead != '\\')
 	{
 		while ((!ws(val)) && (val != '\\') && ! lexer->eof(lexer))
@@ -174,7 +191,7 @@ bool tree_sitter_jnoweb_external_scanner_scan(
 
 	bool res = false;
 
-	if (valid_symbols[_LATEX_WORD] || valid_symbols[JNV_INLINE] || valid_symbols[JNV_SIG_BEG])
+	if (valid_symbols[_LATEX_WORD] || valid_symbols[JNV_INLINE] || valid_symbols[JNV_SIG_BEG] || valid_symbols[LATEX_COMMENT])
 	{
 		res = word_or_sig(lexer);
 	} else if (valid_symbols[JNV_SIG_END]) {

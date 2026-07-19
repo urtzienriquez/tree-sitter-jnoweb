@@ -144,7 +144,17 @@
   {
     "type": "latex",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "latex_comment",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "source_file",
@@ -220,6 +230,10 @@
   },
   {
     "type": "jnv_sig_end",
+    "named": true
+  },
+  {
+    "type": "latex_comment",
     "named": true
   },
   {

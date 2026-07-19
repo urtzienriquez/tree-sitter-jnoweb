@@ -8,3 +8,5 @@
 (jnv_engine_key) @type
 
 (jinline (command_name) @module)
+
+(latex_comment) @comment

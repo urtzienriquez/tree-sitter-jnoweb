@@ -196,3 +196,55 @@ Back again!
 	)
 	(latex)
 )
+
+==================
+LaTeX comment
+==================
+
+% this is a comment
+
+---
+
+(source_file
+	(latex
+		(latex_comment))
+)
+
+==================
+LaTeX comment with Sexpr
+==================
+
+% \Sexpr{10 + 20}
+
+---
+
+(source_file
+	(latex
+		(latex_comment))
+)
+
+==================
+Text followed by comment
+==================
+
+some text % a comment
+
+---
+
+(source_file
+	(latex
+		(latex_comment))
+)
+
+==================
+Comment at start of file
+==================
+
+% just a comment
+
+---
+
+(source_file
+	(latex
+		(latex_comment))
+)

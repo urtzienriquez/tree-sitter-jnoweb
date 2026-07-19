@@ -11,6 +11,7 @@ module.exports = grammar({
     $.jnv_sig_beg,
     $.jnv_sig_end,
     $.jnv_content,
+    $.latex_comment,
   ],
 
   rules: {
@@ -98,7 +99,7 @@ module.exports = grammar({
 
     latex: $ =>
       prec.right(repeat1(
-        $._latex_word,
+        choice($._latex_word, $.latex_comment),
       )),
   },
 });
