@@ -24,10 +24,8 @@
     "url": "https://github.com/urtzienriquez/tree-sitter-jnoweb/issues"
   },
   "homepage": "https://github.com/urtzienriquez/tree-sitter-jnoweb",
-  "dependencies": {
-    "nan": "^2.27.0"
-  },
   "devDependencies": {
+    "nan": "^2.27.0",
     "tree-sitter-cli": "^0.26.9"
   },
   "files": [
