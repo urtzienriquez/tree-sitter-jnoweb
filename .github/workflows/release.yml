@@ -13,6 +13,53 @@ permissions:
   id-token: write
   attestations: write
 
+env:
+  REPO_NAME: tree-sitter-jnoweb
+
 jobs:
   release:
-    uses: tree-sitter/workflows/.github/workflows/release.yml@main
+    name: Build release artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Set up tree-sitter CLI
+        uses: tree-sitter/setup-action/cli@v2
+      - name: Build Wasm binaries
+        shell: bash
+        run: |-
+          while read -r grammar_dir; do
+            tree-sitter build --wasm "$grammar_dir"
+          done < <(jq -r '.grammars[].path // "."' tree-sitter.json)
+      - name: Create source code tarball
+        run: |
+          git ls-files > "$RUNNER_TEMP/files"
+          while read -r src_dir; do
+            printf '%s\n' >> "$RUNNER_TEMP/files" \
+              "$src_dir"/parser.c "$src_dir"/grammar.json \
+              "$src_dir"/node-types.json "$src_dir"/tree_sitter/*
+          done < <(jq -r "$JQ_SCRIPT" tree-sitter.json)
+          tar cvzf "$REPO_NAME.tar.gz" -T <(sort -u "$RUNNER_TEMP/files")
+        env:
+          JQ_SCRIPT: >-
+            .grammars[] |
+            if (.path? // ".") == "."
+            then "src"
+            else "\(.path)/src"
+            end
+      - name: Generate attestations
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: |
+            *.wasm
+            ${{env.REPO_NAME}}.tar.gz
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{github.token}}
+        run: |-
+          RELEASE_NOTE="**NOTE:** Download \`$REPO_NAME.tar.gz\` for the *complete* source code."
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "Release $GITHUB_REF_NAME already exists; skipping creation."
+          else
+            gh release create "$GITHUB_REF_NAME" *.wasm "$REPO_NAME.tar.gz" --notes "$RELEASE_NOTE"
+          fi
