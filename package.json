@@ -25,8 +25,8 @@
   },
   "homepage": "https://github.com/urtzienriquez/tree-sitter-jnoweb",
   "devDependencies": {
-    "nan": "^2.27.0",
-    "tree-sitter-cli": "^0.26.9"
+    "nan": "^2.28.0",
+    "tree-sitter-cli": "^0.26.11"
   },
   "files": [
     "grammar.js",
