@@ -28,5 +28,4 @@
   (latex)
   (latex_comment)
 ] @injection.content
-  (#set! injection.language "latex")
-  (#set! injection.combined))
+  (#set! injection.language "latex"))
